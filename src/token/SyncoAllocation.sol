@@ -2,11 +2,14 @@
 pragma solidity 0.8.28;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /// @title SyncoAllocation
-/// @notice Distribusi nyata alokasi awal SYNCO.
-/// @dev Tidak mencetak token. Token harus disetor terlebih dahulu.
+/// @notice Mendistribusikan alokasi awal SYNCO yang sudah tersedia.
+/// @dev Tidak mencetak token baru. Token harus disetor terlebih dahulu.
 contract SyncoAllocation {
+    using SafeERC20 for IERC20;
+
     uint256 public constant MAX_SUPPLY = 10_000_000 ether;
 
     uint256 public constant STAKING_ALLOCATION = 1_000_000 ether;
@@ -34,10 +37,13 @@ contract SyncoAllocation {
     error InvalidAddress();
     error InvalidCategory();
     error AlreadyDistributed();
-    error TransferFailed();
     error InsufficientAllocationBalance();
 
-    event RecipientConfigured(bytes32 indexed category, address indexed recipient);
+    event RecipientConfigured(
+        bytes32 indexed category,
+        address indexed recipient
+    );
+
     event AllocationDistributed(
         bytes32 indexed category,
         address indexed recipient,
@@ -89,13 +95,15 @@ contract SyncoAllocation {
             revert InsufficientAllocationBalance();
         }
 
+        // Update state before the external token transfer.
         distributed[category] = true;
         totalDistributed += amount;
 
-        bool success = syncoToken.transfer(recipient, amount);
-        if (!success) revert TransferFailed();
-
+        // If transfer fails, the entire transaction, including this
+        // event and state updates, is reverted.
         emit AllocationDistributed(category, recipient, amount);
+
+        syncoToken.safeTransfer(recipient, amount);
     }
 
     function _validCategory(bytes32 category) internal pure returns (bool) {

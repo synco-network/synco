@@ -1,0 +1,19 @@
+{
+  "fee_token": "SYNCO",
+  "reference_currency": "USDC",
+  "target_transfer_fee_usd": "0.0001",
+  "dynamic_pricing": true,
+  "congestion_adjustment": true,
+  "inflation_enabled": false,
+  "new_minting_enabled": false,
+  "oracle": {
+    "pair": "SYNCO/USDC",
+    "mode": "mock",
+    "max_price_age_seconds": 300
+  },
+  "fee_policy": {
+    "simple_transfer_target": true,
+    "smart_contract_fee": "actual_gas_usage",
+    "validator_rewards": "collected_transaction_fees"
+  }
+}
