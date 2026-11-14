@@ -1,0 +1,24 @@
+{
+  "name": "SYNCO",
+  "symbol": "SYNCO",
+  "decimals": 18,
+  "max_supply": "10000000",
+  "minting_enabled": false,
+  "inflation_enabled": false,
+  "native_gas_token": true,
+  "allocation": {
+    "staking_validator": "1000000",
+    "users": "8500000",
+    "developer": "500000"
+  },
+  "gas_fee": {
+    "target_usd": "0.0001",
+    "reference_currency": "USDC",
+    "dynamic_pricing": true
+  },
+  "staking": {
+    "enabled": true,
+    "rewards_from_new_minting": false,
+    "rewards_from_collected_fees": true
+  }
+}
